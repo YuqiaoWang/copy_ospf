@@ -1,4 +1,4 @@
-%% app generated at {2016,9,13} {17,32,4}
+%% app generated at {2016,9,14} {17,28,3}
 {application,pkt,
              [{description,"Network packet parsing library"},
               {vsn,"0.03"},

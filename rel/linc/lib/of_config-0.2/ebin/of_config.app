@@ -1,4 +1,4 @@
-%% app generated at {2016,9,13} {17,32,3}
+%% app generated at {2016,9,14} {17,28,3}
 {application,of_config,
     [{description,"OF-Config Library for Erlang"},
      {vsn,"0.2"},

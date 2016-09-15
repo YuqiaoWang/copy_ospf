@@ -1,31 +1,21 @@
 -module(node_erlang).
--export([read_of_config/0,
-         read_sync_routing/0,
-         read_capable_switch_ports/0,
-         read_capable_switch_queues/0,
-         read_logical_switches/0
-
+-export([get_mailbox/0,
+         configures_linc/0
 ]).
 
--export([read_capabilities/0,
-         read_callback_module/0,
-         read_sshd_ip/0,
-         read_sshd_port/0,
-         read_sshd_user_passwords/0
-]).
+-export([configures_enetconf/0]).
 
--export([read_colored/0,
-         read_handlers/0
-]).
+-export([configures_lager/0]).
 
--export([read_sasl_error_logger/0,
-         read_errlog_type/0,
-         read_error_logger_mf_dir/0,
-         read_error_logger_mf_maxbytes/0,
-         read_error_logger_mf_maxfiles/0
-]).
+-export([configures_sasl/0]).
 
 -export([read_excluded_modules/0]).
+
+-export([transmit_configures_linc/0,
+         transmit_configures_enetconf/0,
+         transmit_configures_lager/0,
+         transmit_configures_sasl/0
+]).
 
 %% ---------------------------configure reading module ------------------------------
 %% Parameters read from linc in sys.config. 
@@ -36,6 +26,10 @@ read_of_config() ->
 read_sync_routing() ->
     {ok, IsSynRoutingTrue} = application:get_env(linc, sync_routing),
     {sync_routing,IsSynRoutingTrue}.
+
+get_mailbox() ->
+    {ok,Mailbox} = application:get_env(linc, mailbox),
+    Mailbox.
 
 read_capable_switch_ports() ->
     {ok, CapableSwitchPorts} = application:get_env(linc, capable_switch_ports),
@@ -112,7 +106,71 @@ read_excluded_modules() ->
     {excluded_modules, ExcludedModules}.
 %%-----------------------------------------------------------------------------------
 
+%%----------------------------configuresread----------------------------------------
+configures_linc() ->
+    Tuple_Linc_Configures = {linc,
+                            [read_of_config(),
+                             read_sync_routing(),
+                             read_capable_switch_ports(),
+                             read_capable_switch_queues(),
+                             read_logical_switches()
+                            ]}.
+
+configures_enetconf() ->
+    Tuple_Enetconf_Configures = {enetconf,
+                                [read_capabilities(),
+                                 read_callback_module(),
+                                 read_sshd_ip(),
+                                 read_sshd_port(),
+                                 read_sshd_user_passwords()
+                                ]}.
+
+configures_lager() ->
+    Tuple_Lager_Configures = {lager,
+                             [read_colored(),
+                              read_handlers()
+                            ]}.
+    
+configures_sasl() ->
+    Tuple_Sasl_Configures = {sasl,
+                            [read_sasl_error_logger(),
+                             read_errlog_type(),
+                             read_error_logger_mf_dir(),
+                             read_error_logger_mf_maxbytes(),
+                             read_error_logger_mf_maxfiles()
+                            ]}.
+
+
+
+
+%%-----------------------------------------------------------------------------------
+
+
+
+
 %%----------------------------transmitting module------------------------------------
+%Host_Name = get_host_name().
+
+
+
+
+
+transmit_configures_linc() ->
+    get_mailbox() ! {self(), configures_linc()},
+    receive {Mbox, Msg} -> Msg end.
+
+transmit_configures_enetconf() ->
+    get_mailbox() ! {self(), configures_enetconf()},
+    receive {Mbox, Msg} -> Msg end.
+
+transmit_configures_lager() ->
+    get_mailbox() ! {self(), configures_lager()},
+    receive {Mbox, Msg} -> Msg end.
+
+transmit_configures_sasl() ->
+    get_mailbox() ! {self(), configures_sasl()},
+    receive {Mbox, Msg} -> Msg end.
+
 
 
 

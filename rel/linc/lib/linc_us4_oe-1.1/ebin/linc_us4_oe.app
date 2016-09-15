@@ -1,4 +1,4 @@
-%% app generated at {2016,9,13} {17,32,3}
+%% app generated at {2016,9,14} {17,28,3}
 {application,linc_us4_oe,
              [{description,"LINC Userspace Backend v4 with Optical Extenstions"},
               {vsn,"1.1"},
