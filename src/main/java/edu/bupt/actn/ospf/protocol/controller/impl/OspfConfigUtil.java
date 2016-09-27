@@ -64,10 +64,11 @@ public final class OspfConfigUtil {
      * 解析JsonNode入参，将其转换为OspfProcess实例，也就是一个OSPF进程类的对象。
      * 得到这个进程并不意味着已经启动了一个进程。
      *
-     * @param jsonNodes represents one or more OSPF process configuration
+     * //@param TupleArea represents one or more OSPF process configuration
      * @return list of OSPF processes.
      */
-    public static List<OspfProcess> processes(TupleAreas jsonNodes) {
+    /*
+    public static List<OspfProcess> processes(JsonNode jsonNodes) {
         List<OspfProcess> ospfProcesses = new ArrayList<>();
         if (jsonNodes == null) {
             return ospfProcesses;
@@ -98,7 +99,30 @@ public final class OspfConfigUtil {
         });
 
         return ospfProcesses;
+    }*/
+
+
+    public static List<OspfProcess> processes(TupleAreas areaNode) {
+        List<OspfProcess> ospfProcesses = new ArrayList<>();
+
+        List<OspfArea> areas = new ArrayList<>();
+        List<OspfInterface> interfaceList = new ArrayList<>();
+        OspfArea area = areaDetails(areaNode);
+        if (area != null) {
+            area.setOspfInterfaceList(interfaceList);
+            areas.add(area);
+        }
+        OspfProcess process = new OspfProcessImpl();
+        //processId范围：1-65535 暂时手动设定
+        process.setProcessId("1");
+        process.setAreas(areas);
+        ospfProcesses.add(process);
+
+
+
+        return ospfProcesses;
     }
+
 
     /**
      * Returns interface IP by index.
@@ -247,30 +271,31 @@ public final class OspfConfigUtil {
      * @param areaNode area configuration
      * @return OSPF area instance
      */
-    private static OspfArea areaDetails(JsonNode areaNode) {
+    private static OspfArea areaDetails(TupleAreas areaNode) {
         OspfArea area = new OspfAreaImpl();
-        String areaId = areaNode.path(AREAID).asText();
-        if (isValidIpAddress(areaId)) {
+        String areaId = areaNode.getAreaId();
+        //if (isValidIpAddress(areaId))
+        if (true) {
             area.setAreaId(Ip4Address.valueOf(areaId));
         } else {
             log.debug("Wrong areaId: {}", areaId);
             return null;
         }
-        String routerId = areaNode.path(ROUTERID).asText();
+        String routerId = areaNode.getRouterId();
         if (isValidIpAddress(routerId)) {
             area.setRouterId(Ip4Address.valueOf(routerId));
         } else {
             log.debug("Wrong routerId: {}", routerId);
             return null;
         }
-        String routingCapability = areaNode.path(EXTERNALROUTINGCAPABILITY).asText();
+        String routingCapability = areaNode.getExternalRoutingCapability();
         if (isBoolean(routingCapability)) {
             area.setExternalRoutingCapability(Boolean.valueOf(routingCapability));
         } else {
             log.debug("Wrong routingCapability: {}", routingCapability);
             return null;
         }
-        String isOpaqueEnabled = areaNode.path(ISOPAQUE).asText();
+        String isOpaqueEnabled = areaNode.getIsOpaqueEnable();
         if (isBoolean(isOpaqueEnabled)) {
             area.setIsOpaqueEnabled(Boolean.valueOf(isOpaqueEnabled));
         } else {

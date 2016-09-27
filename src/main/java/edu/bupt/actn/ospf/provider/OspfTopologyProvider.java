@@ -45,13 +45,13 @@ public class OspfTopologyProvider extends AbstractProvider implements DeviceProv
     final InternalTopologyProvider listener = new InternalTopologyProvider();
 
     // 下面者四个变量的赋值，需要通过外部的方法实现。
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    //@Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected DeviceProviderRegistry deviceProviderRegistry;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    //@Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected LinkProviderRegistry linkProviderRegistry;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    //@Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected LinkService linkService;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    //@Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected OspfController controller;
 
 

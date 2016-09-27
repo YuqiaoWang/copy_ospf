@@ -4,17 +4,27 @@ package edu.bupt.actn.ospf.jinterface; /**
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
+
 public class TupleAreas {
-    int areaId;
+    String areaId;
     TupleNodes nodes;
     TupleLinks links;
+
+
+    public int size() {
+        return 0;
+    }
+
+
+
     public TupleAreas(OtpErlangTuple t1,
                       OtpErlangTuple t2,
                       OtpErlangTuple t3) throws Exception{
         //System.out.println("A TupleAreas object has been generated.");
-        areaId = ((OtpErlangLong)t1.elementAt(1)).intValue();
+        areaId = ((OtpErlangString)t1.elementAt(1)).stringValue();
 
         OtpErlangList nodes_list = (OtpErlangList)t2.elementAt(1);
         OtpErlangTuple nodes_list_routerId =
@@ -55,5 +65,23 @@ public class TupleAreas {
                 links_list_bandwidthPerWave,
                 links_list_cost);
     }
+
+    public String getAreaId() {
+        return areaId;
+    }
+
+    public String getRouterId() {
+        return nodes.getRouterId();
+    }
+
+    public String getExternalRoutingCapability() {
+        return Boolean.toString(nodes.getExternalRoutingCapability());
+    }
+
+    public String getIsOpaqueEnable() {
+        return Boolean.toString(nodes.getIsOpaqueEnable());
+    }
+
+
 
 }

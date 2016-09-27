@@ -1748,13 +1748,4 @@ public class OspfInterfaceImpl implements OspfInterface {
     }
 
 
-    public class OspfClient implements Runnable {
-        public void run() {
-            try{
-                Bootstrap b = new Bootstrap;
-                b.group()
-            }
-
-        }
-    }
 }

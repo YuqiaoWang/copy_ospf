@@ -122,23 +122,24 @@ public class OspfControllerImpl implements OspfController {
     }
 
     //
+
     @Override
     public void updateConfig(JsonNode processesNode) {
-        try {
-            // 首先，从JSON文本中解析出OSPF进程的消息，
-            // 其中包括在该进程中，本节点的接口，进程ID，area ID，router ID等等信息。
-            List<OspfProcess> ospfProcesses = OspfConfigUtil.processes(processesNode);
-            //if there is interface details then update configuration
-            // 但是为毛只检查第一个进程？
-            if (ospfProcesses.size() > 0 &&
-                    ospfProcesses.get(0).areas() != null && ospfProcesses.get(0).areas().size() > 0 &&
-                    ospfProcesses.get(0).areas().get(0) != null &&
-                    ospfProcesses.get(0).areas().get(0).ospfInterfaceList().size() > 0) {
-                ctrl.updateConfig(ospfProcesses);
-            }
-        } catch (Exception e) {
-            log.debug("Error::updateConfig::{}", e.getMessage());
-        }
+//        try {
+//            // 首先，从JSON文本中解析出OSPF进程的消息，
+//            // 其中包括在该进程中，本节点的接口，进程ID，area ID，router ID等等信息。
+//            List<OspfProcess> ospfProcesses = OspfConfigUtil.processes(processesNode);
+//            //if there is interface details then update configuration
+//            // 但是为毛只检查第一个进程？
+//            if (ospfProcesses.size() > 0 &&
+//                    ospfProcesses.get(0).areas() != null && ospfProcesses.get(0).areas().size() > 0 &&
+//                    ospfProcesses.get(0).areas().get(0) != null &&
+//                    ospfProcesses.get(0).areas().get(0).ospfInterfaceList().size() > 0) {
+//                ctrl.updateConfig(ospfProcesses);
+//            }
+//        } catch (Exception e) {
+//            log.debug("Error::updateConfig::{}", e.getMessage());
+//        }
     }
 
     @Override
@@ -148,21 +149,32 @@ public class OspfControllerImpl implements OspfController {
 
     /**
      * 整个工程的入口函数。
-     * @param args
+     * //@param args
      */
+
+    public void startClient(List<OspfProcess> ospfProcesses) throws Exception {
+        OspfClient ospfClient = new OspfClient(ctrl, ospfProcesses);
+        System.out.println("try to start a client.");
+        ospfClient.startClient();
+
+    }
     public static void main(String[] args)  throws IOException {
         OspfControllerImpl ospfController = getInstance();
         //起控制器，记初始时间
         ospfController.activate();
-        OspfTopologyProvider ospfTopologyProvider = OspfTopologyProvider.getInstance(ospfController);
-        ospfTopologyProvider.activate();
+
 
         // JInterface API starts
         //Interaction.erlInteraction(args);
         Interaction interaction = new Interaction();
         TupleAreas tupleAreas = interaction.doInteraction();
         List<OspfProcess> ospfProcesses = OspfConfigUtil.processes(tupleAreas);
+        try{
+            ospfController.startClient(ospfProcesses);
+        }catch (Exception e) {}
 
+        OspfTopologyProvider ospfTopologyProvider = OspfTopologyProvider.getInstance(ospfController);
+        ospfTopologyProvider.activate();
 
 
 

@@ -51,4 +51,16 @@ public class TupleNodes {
 
 
     }
+
+    public String getRouterId() {
+        return routerId;
+    }
+
+    public Boolean getExternalRoutingCapability() {
+        return externalRoutingCapability;
+    }
+
+    public Boolean getIsOpaqueEnable() {
+        return isOpaqueEnable;
+    }
 }
