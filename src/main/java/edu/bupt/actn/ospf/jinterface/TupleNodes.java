@@ -63,4 +63,16 @@ public class TupleNodes {
     public Boolean getIsOpaqueEnable() {
         return isOpaqueEnable;
     }
+
+    public int getInterfaceIndex() {
+        return interfaces.getInterfaceIndex();
+    }
+
+    public int getInterfaceType() {
+        return interfaces.getInterfaceType();
+    }
+
+    public TupleInterfaces getTupleInterfaces() {
+        return this.interfaces;
+    }
 }

@@ -17,6 +17,7 @@ package edu.bupt.actn.ospf.protocol.controller.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import edu.bupt.actn.ospf.jinterface.TupleAreas;
+import edu.bupt.actn.ospf.jinterface.TupleInterfaces;
 import org.onlab.packet.Ip4Address;
 import edu.bupt.actn.ospf.protocol.controller.OspfArea;
 import edu.bupt.actn.ospf.protocol.controller.OspfInterface;
@@ -108,6 +109,15 @@ public final class OspfConfigUtil {
         List<OspfArea> areas = new ArrayList<>();
         List<OspfInterface> interfaceList = new ArrayList<>();
         OspfArea area = areaDetails(areaNode);
+
+        //设置一个 OspfInterfaceImpl
+        OspfInterfaceImpl ospfInterfaceImpl = new OspfInterfaceImpl();
+        ospfInterfaceImpl.setInterfaceIndex(areaNode.getInterfaceIndex());
+        ospfInterfaceImpl.setInterfaceType(areaNode.getInterfaceType());
+        OspfInterface ospfInterface = interfaceDetails(areaNode.getTupleInterfaces());
+        interfaceList.add(ospfInterface);
+
+
         if (area != null) {
             area.setOspfInterfaceList(interfaceList);
             areas.add(area);
@@ -310,9 +320,10 @@ public final class OspfConfigUtil {
     /**
      * Returns OSPF interface instance from configuration.
      *
-     * @param interfaceNode interface configuration
+     * //@param interfaceNode interface configuration
      * @return OSPF interface instance
      */
+    /*
     private static OspfInterface interfaceDetails(JsonNode interfaceNode) {
         OspfInterface ospfInterface = new OspfInterfaceImpl();
         String index = interfaceNode.path(INTERFACEINDEX).asText();
@@ -346,6 +357,52 @@ public final class OspfConfigUtil {
             return null;
         }
         String interfaceType = interfaceNode.path(INTERFACETYPE).asText();
+        if (isValidDigit(interfaceType)) {
+            ospfInterface.setInterfaceType(Integer.parseInt(interfaceType));
+        } else {
+            log.debug("Wrong interfaceType: {}", interfaceType);
+            return null;
+        }
+        ospfInterface.setReTransmitInterval(OspfUtil.RETRANSMITINTERVAL);
+        ospfInterface.setMtu(OspfUtil.MTU);
+        ospfInterface.setRouterPriority(OspfUtil.ROUTER_PRIORITY);
+
+        return ospfInterface;
+    }*/
+
+    private static OspfInterface interfaceDetails(TupleInterfaces tupleInterfaces) {
+        OspfInterface ospfInterface = new OspfInterfaceImpl();
+        String index = Integer.toString(tupleInterfaces.getInterfaceIndex());
+        if (isValidDigit(index)) {
+            ospfInterface.setInterfaceIndex(Integer.parseInt(index));
+        } else {
+            log.debug("Wrong interface index: {}", index);
+            return null;
+        }
+        Ip4Address interfaceIp = getInterfaceIp(ospfInterface.interfaceIndex());
+        if (interfaceIp.equals(OspfUtil.DEFAULTIP)) {
+            return null;
+        }
+        ospfInterface.setIpAddress(interfaceIp);
+        //ospfInterface.setIpNetworkMask(Ip4Address.valueOf(getInterfaceMask(
+        //        ospfInterface.interfaceIndex())));
+        ospfInterface.setBdr(OspfUtil.DEFAULTIP);
+        ospfInterface.setDr(OspfUtil.DEFAULTIP);
+        String helloInterval = Integer.toString(tupleInterfaces.getHelloIntervalTime());
+        if (isValidDigit(helloInterval)) {
+            ospfInterface.setHelloIntervalTime(Integer.parseInt(helloInterval));
+        } else {
+            log.debug("Wrong hello interval: {}", helloInterval);
+            return null;
+        }
+        String routerDeadInterval = Integer.toString(tupleInterfaces.getRouterDeadIntervalTime());
+        if (isValidDigit(routerDeadInterval)) {
+            ospfInterface.setRouterDeadIntervalTime(Integer.parseInt(routerDeadInterval));
+        } else {
+            log.debug("Wrong routerDeadInterval: {}", routerDeadInterval);
+            return null;
+        }
+        String interfaceType = Integer.toString(tupleInterfaces.getInterfaceType());
         if (isValidDigit(interfaceType)) {
             ospfInterface.setInterfaceType(Integer.parseInt(interfaceType));
         } else {

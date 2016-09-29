@@ -48,6 +48,7 @@ public final class OspfUtil {
     public static final int LSAPACKET_CHECKSUM_POS1 = 16;
     public static final int LSAPACKET_CHECKSUM_POS2 = 17;
     public static final Ip4Address ALL_SPF_ROUTERS = Ip4Address.valueOf("224.0.0.5");
+    public static final Ip4Address SERVER_IP = Ip4Address.valueOf("10.108.48.226");
     public static final Ip4Address ALL_DROUTERS = Ip4Address.valueOf("224.0.0.6");
     public static final Ip4Address DEFAULTIP = Ip4Address.valueOf("0.0.0.0");
     public static final int RETRANSMITINTERVAL = 5;

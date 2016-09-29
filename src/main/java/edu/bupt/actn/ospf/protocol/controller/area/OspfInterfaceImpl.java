@@ -22,6 +22,7 @@ import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.Channels;
 import org.onlab.packet.Ip4Address;
 import edu.bupt.actn.ospf.protocol.controller.*;
 import edu.bupt.actn.ospf.protocol.controller.impl.Controller;
@@ -56,12 +57,12 @@ public class OspfInterfaceImpl implements OspfInterface {
     private Ip4Address ipAddress;
     private Ip4Address ipNetworkMask;
     private Channel channel = null;
-    private int helloIntervalTime;
-    private int routerDeadIntervalTime;
+    private int helloIntervalTime=1;
+    private int routerDeadIntervalTime=4;
     private int routerPriority;
     private int interfaceType;
     private int mtu;
-    private int reTransmitInterval;
+    private int reTransmitInterval=5;
     private Ip4Address dr;
     private Ip4Address bdr;
     private OspfInterfaceState state;
@@ -1188,7 +1189,7 @@ public class OspfInterfaceImpl implements OspfInterface {
         exServiceHello = Executors.newSingleThreadScheduledExecutor();
         helloTimerTask = new InternalHelloTimer();
         final ScheduledFuture<?> helloHandle =
-                exServiceHello.scheduleAtFixedRate(helloTimerTask, delay, helloIntervalTime, TimeUnit.SECONDS);
+                exServiceHello.scheduleAtFixedRate(helloTimerTask, delay, 1, TimeUnit.SECONDS);
     }
 
     /**
@@ -1635,7 +1636,7 @@ public class OspfInterfaceImpl implements OspfInterface {
                     return;
                 }
 
-                hellopacket.setDestinationIp(OspfUtil.ALL_SPF_ROUTERS);
+                hellopacket.setDestinationIp(OspfUtil.SERVER_IP);
                 byte[] messageToWrite = getMessage(hellopacket);
                 ChannelFuture future = channel.write(messageToWrite);
                 if (future.isSuccess()) {

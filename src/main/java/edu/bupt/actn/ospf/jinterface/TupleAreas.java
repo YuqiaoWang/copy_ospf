@@ -82,6 +82,18 @@ public class TupleAreas {
         return Boolean.toString(nodes.getIsOpaqueEnable());
     }
 
+    public int getInterfaceIndex() {
+        return nodes.getInterfaceIndex();
+    }
+
+    public int getInterfaceType() {
+        return nodes.getInterfaceType();
+    }
+
+    public TupleInterfaces getTupleInterfaces () {
+        return this.nodes.interfaces;
+    }
+
 
 
 }

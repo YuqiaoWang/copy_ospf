@@ -147,10 +147,7 @@ public class OspfControllerImpl implements OspfController {
     }
 
 
-    /**
-     * 整个工程的入口函数。
-     * //@param args
-     */
+
 
     public void startClient(List<OspfProcess> ospfProcesses) throws Exception {
         OspfClient ospfClient = new OspfClient(ctrl, ospfProcesses);
@@ -158,6 +155,11 @@ public class OspfControllerImpl implements OspfController {
         ospfClient.startClient();
 
     }
+
+    /**
+     * 整个工程的入口函数。
+     * //@param args
+     */
     public static void main(String[] args)  throws IOException {
         OspfControllerImpl ospfController = getInstance();
         //起控制器，记初始时间
@@ -174,7 +176,7 @@ public class OspfControllerImpl implements OspfController {
         }catch (Exception e) {}
 
         OspfTopologyProvider ospfTopologyProvider = OspfTopologyProvider.getInstance(ospfController);
-        ospfTopologyProvider.activate();
+        //ospfTopologyProvider.activate();
 
 
 

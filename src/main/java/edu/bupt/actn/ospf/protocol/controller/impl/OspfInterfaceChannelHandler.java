@@ -48,6 +48,7 @@ public class OspfInterfaceChannelHandler extends IdleStateAwareChannelHandler {
     private byte[] configPacket = null;
     private Map<Integer, OspfInterface> ospfInterfaceMap = new ConcurrentHashMap<>();
 
+
     /**
      * Creates an instance of OSPF channel handler.
      *
@@ -70,6 +71,7 @@ public class OspfInterfaceChannelHandler extends IdleStateAwareChannelHandler {
             for (OspfArea area : process.areas()) {
                 for (OspfInterface ospfInterface : area.ospfInterfaceList()) {
                     OspfInterface anInterface = ospfInterfaceMap.get(ospfInterface.interfaceIndex());
+                    //System.out.println("ospfInterfaceIndex: " + ospfInterface.interfaceIndex());
                     if (anInterface == null) {
                         ospfInterface.setOspfArea(area);
                         ((OspfInterfaceImpl) ospfInterface).setController(controller);
@@ -79,8 +81,10 @@ public class OspfInterfaceChannelHandler extends IdleStateAwareChannelHandler {
                         ospfInterfaceMap.put(ospfInterface.interfaceIndex(), ospfInterface);
                     }
                     ((OspfInterfaceImpl) ospfInterface).setChannel(channel);
+                    //((OspfInterfaceImpl) ospfInterface).startHelloTimer();
                     ospfInterface.interfaceUp();
                     ospfInterface.startDelayedAckTimer();
+                    //ospfInterface.startHelloTimer();
                 }
                 //Initialize the LSDB and aging process
                 area.initializeDb();
@@ -153,6 +157,7 @@ public class OspfInterfaceChannelHandler extends IdleStateAwareChannelHandler {
             sentConfigPacket(configPacket);
         }
         initializeInterfaceMap();
+
     }
 
     @Override
@@ -160,6 +165,7 @@ public class OspfInterfaceChannelHandler extends IdleStateAwareChannelHandler {
         log.info("OSPF channelConnected from {}", evt.getChannel().getRemoteAddress());
         this.channel = evt.getChannel();
         initialize();
+        //channel.write("hehe");
     }
 
     @Override

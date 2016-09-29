@@ -41,10 +41,11 @@ public final class OspfClient {
     private Channel channel;
     protected String channelId;
 
-    static String HOST = System.getProperty("host", "10.108.51.228");
+    static String HOST = System.getProperty("host", "10.108.48.226");
     static final int PORT = Integer.parseInt(System.getProperty("port", "8007"));
     static final int SIZE = Integer.parseInt(System.getProperty("size", "256"));
     public ChannelFuture f;
+    public OspfInterfaceChannelHandler ospfInterfaceChannelHandler;
     //final SslContext sslCtx = SslContext.newClientContext();
     //public Ip4Address remoteAddress;
 
@@ -52,6 +53,8 @@ public final class OspfClient {
     public OspfClient(Controller controller, List<OspfProcess> processes) {
         this.controller = controller;
         this.processes = processes;
+        ospfInterfaceChannelHandler =
+                new OspfInterfaceChannelHandler(controller, processes);
     }
 
     public void startClient() throws Exception {
@@ -59,14 +62,14 @@ public final class OspfClient {
         ClientBootstrap bootstrap = new ClientBootstrap(
                 new NioClientSocketChannelFactory(
                         Executors.newCachedThreadPool(),
-                        Executors.newSingleThreadExecutor()
+                        Executors.newCachedThreadPool()
                 ));
         try{
             bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
                 @Override
                 public ChannelPipeline getPipeline() throws Exception {
                     ChannelPipeline p = Channels.pipeline();
-                    p.addLast("echo", new OspfInterfaceChannelHandler(controller,processes));
+                    p.addLast("echo", ospfInterfaceChannelHandler);
                     return p;
                 }
             });
@@ -79,10 +82,10 @@ public final class OspfClient {
             ChannelFuture future = bootstrap.connect(new InetSocketAddress(HOST, PORT));
 
             //Wait until the connetction is closed or the connection attempt failed.
-            future.getChannel().getCloseFuture().sync();
+//            future.getChannel().getCloseFuture().sync();
 
         } finally {
-            bootstrap.releaseExternalResources();
+            //bootstrap.releaseExternalResources();
 
         }
 

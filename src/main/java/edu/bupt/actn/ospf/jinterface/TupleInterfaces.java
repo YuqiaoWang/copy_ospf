@@ -32,5 +32,21 @@ public class TupleInterfaces {
 
     }
 
+    public int getInterfaceIndex() {
+        return  interfaceIndex;
+    }
+
+    public int getInterfaceType() {
+        return interfaceType;
+    }
+
+    public int getHelloIntervalTime() {
+        return helloIntervalTime;
+    }
+
+    public int getRouterDeadIntervalTime() {
+        return routerDeadIntervalTime;
+    }
+
 
 }
